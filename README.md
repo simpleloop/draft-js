@@ -1,3 +1,5 @@
+This is a quick and dirty draftjs fork that allows to specify an offset for the autoscroll. Useful in cases where f.e. a toolbar is not at the top, but the bottom.
+
 # [Draft.js](http://draftjs.org/) [![Build Status](https://img.shields.io/travis/facebook/draft-js/master.svg?style=flat)](https://travis-ci.org/facebook/draft-js) [![npm version](https://img.shields.io/npm/v/draft-js.svg?style=flat)](https://yarn.pm/draft-js)
 
 Draft.js is a JavaScript rich text editor framework, built for React and
