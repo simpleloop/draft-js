@@ -13,13 +13,13 @@
 
 'use strict';
 
-import type {BlockNodeRecord} from 'BlockNodeRecord';
+import type { BlockNodeRecord } from 'BlockNodeRecord';
 import type ContentState from 'ContentState';
-import type {DraftDecoratorType} from 'DraftDecoratorType';
-import type {DraftInlineStyle} from 'DraftInlineStyle';
+import type { DraftDecoratorType } from 'DraftDecoratorType';
+import type { DraftInlineStyle } from 'DraftInlineStyle';
 import type SelectionState from 'SelectionState';
-import type {BidiDirection} from 'UnicodeBidiDirection';
-import type {List} from 'immutable';
+import type { BidiDirection } from 'UnicodeBidiDirection';
+import type { List } from 'immutable';
 
 const DraftEditorLeaf = require('DraftEditorLeaf.react');
 const DraftOffsetKey = require('DraftOffsetKey');
@@ -44,7 +44,7 @@ type Props = {
   blockProps?: Object,
   blockStyleFn: (block: BlockNodeRecord) => string,
   contentState: ContentState,
-  customStyleFn: (style: DraftInlineStyle, block: BlockNodeRecord) => ?Object,
+  customStyleFn: (style: DraftInlineStyle, block: BlockNodeRecord) =>?Object,
   customStyleMap: Object,
   decorator: ?DraftDecoratorType,
   direction: BidiDirection,
@@ -104,19 +104,19 @@ class DraftEditorBlock extends React.Component<Props> {
     const blockNode = ReactDOM.findDOMNode(this);
     const scrollParent = Style.getScrollParent(blockNode);
     const scrollPosition = getScrollPosition(scrollParent);
+    // TODO: get this via props instead of a global variable
+    const autoScrollOffset = (typeof window._draftjsScrollOffset === 'number')
+      ? window._draftjsScrollOffset
+      : 0
     let scrollDelta;
 
     if (scrollParent === window) {
       const nodePosition = getElementPosition(blockNode);
       const nodeBottom = nodePosition.y + nodePosition.height;
-      const viewportHeight = getViewportDimensions().height;
+      const viewportHeight = getViewportDimensions().height - autoScrollOffset;
       scrollDelta = nodeBottom - viewportHeight;
       if (scrollDelta > 0) {
-        // TODO: replace this with something nice.
         let scrollY = scrollPosition.y + scrollDelta + SCROLL_BUFFER;
-        if (window._draftjs_scroll_offset) {
-          scrollY -= window._draftjs_scroll_offset;
-        }
         window.scrollTo(scrollPosition.x, scrollY);
       }
     } else {
@@ -125,14 +125,10 @@ class DraftEditorBlock extends React.Component<Props> {
         'blockNode is not an HTMLElement',
       );
       const blockBottom = blockNode.offsetHeight + blockNode.offsetTop;
-      const scrollBottom = scrollParent.offsetHeight + scrollPosition.y;
+      const scrollBottom = scrollParent.offsetHeight + scrollPosition.y - autoScrollOffset;
       scrollDelta = blockBottom - scrollBottom;
       if (scrollDelta > 0) {
-        // TODO: replace this with something nice.
         let scrollY = Scroll.getTop(scrollParent) + scrollDelta + SCROLL_BUFFER;
-        if (window._draftjs_scroll_offset) {
-          scrollY -= window._draftjs_scroll_offset;
-        }
         Scroll.setTop(scrollParent, scrollY);
       }
     }
@@ -221,7 +217,7 @@ class DraftEditorBlock extends React.Component<Props> {
   }
 
   render(): React.Node {
-    const {direction, offsetKey} = this.props;
+    const { direction, offsetKey } = this.props;
     const className = cx({
       'public/DraftStyleDefault/block': true,
       'public/DraftStyleDefault/ltr': direction === 'LTR',
