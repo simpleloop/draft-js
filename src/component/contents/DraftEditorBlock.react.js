@@ -112,10 +112,12 @@ class DraftEditorBlock extends React.Component<Props> {
       const viewportHeight = getViewportDimensions().height;
       scrollDelta = nodeBottom - viewportHeight;
       if (scrollDelta > 0) {
-        window.scrollTo(
-          scrollPosition.x,
-          scrollPosition.y + scrollDelta + SCROLL_BUFFER,
-        );
+        // TODO: replace this with something nice.
+        let scrollY = scrollPosition.y + scrollDelta + SCROLL_BUFFER;
+        if (window._draftjs_scroll_offset) {
+          scrollY -= window._draftjs_scroll_offset;
+        }
+        window.scrollTo(scrollPosition.x, scrollY);
       }
     } else {
       invariant(
@@ -126,10 +128,12 @@ class DraftEditorBlock extends React.Component<Props> {
       const scrollBottom = scrollParent.offsetHeight + scrollPosition.y;
       scrollDelta = blockBottom - scrollBottom;
       if (scrollDelta > 0) {
-        Scroll.setTop(
-          scrollParent,
-          Scroll.getTop(scrollParent) + scrollDelta + SCROLL_BUFFER,
-        );
+        // TODO: replace this with something nice.
+        let scrollY = Scroll.getTop(scrollParent) + scrollDelta + SCROLL_BUFFER;
+        if (window._draftjs_scroll_offset) {
+          scrollY -= window._draftjs_scroll_offset;
+        }
+        Scroll.setTop(scrollParent, scrollY);
       }
     }
   }
