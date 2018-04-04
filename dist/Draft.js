@@ -4901,32 +4901,26 @@ var DraftEditorBlock = function (_React$Component) {
     var blockNode = ReactDOM.findDOMNode(this);
     var scrollParent = Style.getScrollParent(blockNode);
     var scrollPosition = getScrollPosition(scrollParent);
+    // TODO: get this via props instead of a global variable
+    var autoScrollOffset = typeof window._draftjsScrollOffset === 'number' ? window._draftjsScrollOffset : 0;
     var scrollDelta = void 0;
 
     if (scrollParent === window) {
       var nodePosition = getElementPosition(blockNode);
       var nodeBottom = nodePosition.y + nodePosition.height;
-      var viewportHeight = getViewportDimensions().height;
+      var viewportHeight = getViewportDimensions().height - autoScrollOffset;
       scrollDelta = nodeBottom - viewportHeight;
       if (scrollDelta > 0) {
-        // TODO: replace this with something nice.
         var scrollY = scrollPosition.y + scrollDelta + SCROLL_BUFFER;
-        if (window._draftjs_scroll_offset) {
-          scrollY -= window._draftjs_scroll_offset;
-        }
         window.scrollTo(scrollPosition.x, scrollY);
       }
     } else {
       !(blockNode instanceof HTMLElement) ?  true ? invariant(false, 'blockNode is not an HTMLElement') : invariant(false) : void 0;
       var blockBottom = blockNode.offsetHeight + blockNode.offsetTop;
-      var scrollBottom = scrollParent.offsetHeight + scrollPosition.y;
+      var scrollBottom = scrollParent.offsetHeight + scrollPosition.y - autoScrollOffset;
       scrollDelta = blockBottom - scrollBottom;
       if (scrollDelta > 0) {
-        // TODO: replace this with something nice.
         var _scrollY = Scroll.getTop(scrollParent) + scrollDelta + SCROLL_BUFFER;
-        if (window._draftjs_scroll_offset) {
-          _scrollY -= window._draftjs_scroll_offset;
-        }
         Scroll.setTop(scrollParent, _scrollY);
       }
     }
